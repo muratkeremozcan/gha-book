@@ -1,0 +1,61 @@
+name: My First Workflow
+
+on:
+  push: # Trigger on any branch push
+    branches: # Filter to only trigger on pushes to the main branch
+      - main
+
+  pull_request: # Trigger on pull request events targeting any branch
+
+  repository_dispatch: # Custom trigger for external systems (e.g., Pact webhook in a provider repo triggered by a consumer)
+    types: [event1, event2]
+
+  workflow_dispatch: # Manual trigger with input parameters
+    inputs:
+      homedrive:
+        description: "The home drive on the machine"
+        required: true
+      logLevel: # Custom input: log level with default and choices
+        description: "Log level"
+        default: "warning"
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+      tag: # Custom input: boolean to decide if a tag should be applied after a test run
+        description: "Apply tag after successful test run"
+        required: true
+        type: boolean
+      environment: # Custom input: environment variable for test runs
+        description: "Environment to run tests against"
+        type: environment
+        required: true
+
+jobs:
+  MyFirstJob:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Workflow Inputs
+        if: ${{ github.event_name == 'workflow_dispatch' }} # Run this step only if triggered manually
+        run: |
+          echo "Homedrive: ${{ inputs.homedrive }}"
+          echo "Log level: ${{ inputs.logLevel }}"
+          echo "Tag source: ${{ inputs.tag }}"
+          echo "Environment ${{ inputs.environment }}"
+
+      - name: Payload
+        if: ${{ github.event_name == 'repository_dispatch' }} # Run this step only if triggered by repository_dispatch
+        run: |
+          echo "Payload: ${{ toJSON(github.event.client_payload)}}"
+
+      - run: echo "👋 Hello World" # Basic step to print a message
+
+      - name: Checkout
+        uses: actions/checkout@v4 # Use GitHub's checkout action to pull repository code
+
+      - name: List the files in the repository
+        run: | # List all files in the repository using the tree command
+          echo "The repository ${{ github.repository }} contains the following files:"
+          tree
