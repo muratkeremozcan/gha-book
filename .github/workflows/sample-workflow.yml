@@ -1,11 +1,41 @@
-name: My First Workflow
+name: Sample Workflow
 
 on:
   push: # Trigger on any branch push
     branches: # Filter to only trigger on pushes to the main branch
       - main
+    # Filter to only trigger on pushes to a specific path
+    paths:
+      - ".github/**" # the * character is a special character in YAML, so you have to quote all strings that contain values with wildcards
 
   pull_request: # Trigger on pull request events targeting any branch
+    types:
+      - opened # Trigger when a PR is created
+      - reopened # Trigger when a PR is reopened
+      - synchronize # Trigger when new commits are pushed to the PR
+      - edited # Trigger when a PR title or description is edited
+      # less common
+      - ready_for_review # Trigger when a draft PR is marked as ready for review
+      - closed # Trigger when a PR is closed
+      - review_requested # Trigger when a reviewer is requested for the PR
+      - assigned # Trigger when a PR is assigned to someone
+      - unassigned # Trigger when a PR is unassigned
+      - labeled # Trigger when a label is added to the PR
+      - unlabeled # Trigger when a label is removed from the PR
+      - converted_to_draft # Trigger when a PR is converted to a draft
+      - review_request_removed # Trigger when a reviewer request is removed
+    # for more https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
+
+  schedule:
+    # Runs at every 15th minute
+    - cron: "*/15 * * * *"
+    # Runs every hour from 9am to 5pm
+    - cron: "0 9-17 * * *"
+    # Runs every Friday at midnight
+    - cron: "0 0 * * FRI"
+    # Runs every quarter (00:00 on day 1 every 3rd month)
+    - cron: "0 0 1 */3 *"
+    # for cron syntax https://crontab.guru/#0_1-23_*_*_6-7
 
   repository_dispatch: # Custom trigger for external systems (e.g., Pact webhook in a provider repo triggered by a consumer)
     types: [event1, event2]
@@ -27,14 +57,26 @@ on:
         description: "Apply tag after successful test run"
         required: true
         type: boolean
+      # Github > Settings > Environments
+      # Used to differentiate environment-specific settings, such as environment variables, secrets, and protection rules
+      # for workflows targeting different stages of your deployment pipeline (e.g., dev, stage, prod).
+      # have to add an environment so that there is a choice here
       environment: # Custom input: environment variable for test runs
         description: "Environment to run tests against"
         type: environment
         required: true
 
 jobs:
-  MyFirstJob:
-    runs-on: ubuntu-latest
+  matrix-example:
+    strategy:
+      fail-fast: false # continue all jobs even if one fails
+      max-parallel: 3 # optional
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        node-version: [18, 20, 22]
+
+    name: Run on ${{ matrix.os }} with Node ${{ matrix.node-version }}
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Workflow Inputs

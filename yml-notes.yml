@@ -1,0 +1,70 @@
+############
+
+# types in yml
+integer: 42
+float: 42.0
+string: a text value
+boolean: true
+null value: null
+datetime: 1999-12-31T23:59:43.1Z
+
+####
+
+# keys and values can contain spaces and do not need quotation
+# we only have to use quotes if strings contain special characters 
+# or if the characters would indicate an incorrect data type to YAML.
+single quotes: 'have ''one quote'' as the escape pattern'
+double quotes: "have the \"backslash \" escape pattern"
+
+# Examples where quotes are necessary
+unquoted_string: 12345 # Interpreted as an integer without quotes
+quoted_string: "12345" # Interpreted as a string due to quotes
+
+special_chars_single: 'This string contains a # symbol and won''t break YAML parsing'
+special_chars_double: "This string includes a : colon and \"quotes\" for clarity"
+
+ambiguous_type_1: "true" # Interpreted as a string, not a boolean
+ambiguous_type_2: "42.0" # Interpreted as a string, not a float
+ambiguous_type_3: "null" # Interpreted as a string, not a null value
+
+path_with_special_characters: 'C:\Program Files\MyApp\bin' # Avoids interpreting `\` as an escape
+url_example: "https://example.com/?q=value&other=value2" # Special characters like `&` and `?`
+
+####
+
+# String variables can also span multiple lines using the pipe operator
+literal_block: |
+    Text blocks use four spaces as indentation. The entire
+    block is assigned to the key 'literal_block' and keeps
+    line breaks and empty lines.
+  
+    The block continuous until the next YAML element with the same
+    indentation as the literal block.
+
+############
+
+# Collection types: maps(objects) and lists/sequences(arrays)
+
+# maps use 2 spaces for indentation
+parent:
+  key1: value1
+  key2: value2
+  child:
+    key1: value1
+
+# yml is a superset of JSON, so maps can be JSON too
+parent2: {key1: value1, key2: value2, child: {key1: value1}}
+
+####
+
+# A sequence is an ordered list of items and has a dash before each line:
+sequence:
+  - item1
+  - item2
+  - item3
+
+# they can also be in JSON syntax
+sequence2: [item1, item2, item3]
+
+############
+# for unnecessary details check out https://yaml.org/spec/1.2.2/#13-terminology
