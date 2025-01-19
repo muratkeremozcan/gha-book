@@ -28,15 +28,19 @@ jobs:
 
       # passing an output to subsequent steps / jobs
       # echo "{name}={value}" >> "$GITHUB_OUTPUT"
+      # setting an env var
+      # echo "{name}={value}" >> "$GITHUB_ENV"
       - name: generate, mask and output a secret
         id: sets-a-secret
         run: |
           the_secret='123456'
-          echo "::add-mask::$the_secret"
           echo "$the_secret"
-          echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT"
+          echo "::add-mask::$the_secret"
+          echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT" 
+          echo "secret-state=$the_secret_state" >> "$GITHUB_ENV"
 
       - name: Use that secret output (protected by mask)
         run: |
           echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
           echo "${{ steps.sets-a-secret.outputs.secret-number }}" | sed 's/./& /g'
+          echo "the secret state is ${{ env.secret-state }}"
