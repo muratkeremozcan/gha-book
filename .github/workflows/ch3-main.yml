@@ -37,6 +37,7 @@ jobs:
           echo "$the_secret"
           echo "::add-mask::$the_secret"
           echo "secret-number=$the_secret" >> "$GITHUB_OUTPUT" 
+          the_secret_state='abcd'
           echo "secret-state=$the_secret_state" >> "$GITHUB_ENV"
 
       - name: Use that secret output (protected by mask)
