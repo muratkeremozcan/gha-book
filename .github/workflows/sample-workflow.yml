@@ -70,12 +70,13 @@ jobs:
   matrix-example:
     strategy:
       fail-fast: false # continue all jobs even if one fails
-      max-parallel: 3 # optional
+      max-parallel: 4 # optional
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
+        shardIndex: [1, 2]
         node-version: [18, 20, 22]
 
-    name: Run on ${{ matrix.os }} with Node ${{ matrix.node-version }}
+    name: Run on ${{ matrix.os }} with Node ${{ matrix.node-version }} and index ${{ matrix.shardIndex }}
     runs-on: ${{ matrix.os }}
 
     steps:
