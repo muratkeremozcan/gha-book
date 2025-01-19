@@ -50,3 +50,10 @@ jobs:
           echo "the secret number is ${{ steps.sets-a-secret.outputs.secret-number }}"
           echo "${{ steps.sets-a-secret.outputs.secret-number }}" | sed 's/./& /g'
           echo "the secret state is ${{ env.secret-state }}"
+
+      - name: Create a job summary
+        run: |
+          # Append to the job summary
+          echo "### Secret Output Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Secret Number (masked): ***" >> $GITHUB_STEP_SUMMARY
+          echo "- Secret State: ${{ env.secret-state }}" >> $GITHUB_STEP_SUMMARY
