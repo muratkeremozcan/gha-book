@@ -1,4 +1,5 @@
-name: Sample Workflow
+# https://livebook.manning.com/book/github-actions-in-action/chapter-3/160
+name: Ch3 Sample Workflow
 
 on:
   push: # Trigger on any branch push
@@ -75,6 +76,7 @@ jobs:
         os: [ubuntu-latest]
         shardIndex: [1, 2]
         node-version: [18, 20, 22]
+    # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
 
     name: Run on ${{ matrix.os }} with Node ${{ matrix.node-version }} and index ${{ matrix.shardIndex }}
     runs-on: ${{ matrix.os }}
