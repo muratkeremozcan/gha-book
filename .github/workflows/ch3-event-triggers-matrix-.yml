@@ -1,5 +1,5 @@
 # https://livebook.manning.com/book/github-actions-in-action/chapter-3/160
-name: Ch3 Sample Workflow
+name: Ch3 Event Triggers Matrix
 
 on:
   push: # Trigger on any branch push
@@ -68,7 +68,7 @@ on:
         required: true
 
 jobs:
-  matrix-example:
+  ch3-event-triggers-matrix:
     strategy:
       fail-fast: false # continue all jobs even if one fails
       max-parallel: 4 # optional
