@@ -54,6 +54,8 @@ jobs:
       - name: Create a job summary
         run: |
           # Append to the job summary
-          echo "### Secret Output Summary" >> $GITHUB_STEP_SUMMARY
-          echo "- Secret Number (masked): ***" >> $GITHUB_STEP_SUMMARY
-          echo "- Secret State: ${{ env.secret-state }}" >> $GITHUB_STEP_SUMMARY
+          { 
+          	echo "### Secret Output Summary";
+          	echo "- Secret Number (masked): ***";
+          	echo "- Secret State: ${{ env.secret-state }}";
+          } >> $GITHUB_STEP_SUMMARY
