@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: devops-actions/actionlint@v0.1.2
+      - uses: devops-actions/actionlint@v0.1.3
 
       - name: Access secrets
         run: |
@@ -52,10 +52,14 @@ jobs:
           echo "the secret state is ${{ env.secret-state }}"
 
       - name: Create a job summary
-        run: |
-          # Append to the job summary
-          { 
-            echo "### Secret Output Summary";
-            echo "- Secret Number (masked): ***";
-            echo "- Secret State: ${{ env.secret-state }}";
-          } >> "$GITHUB_STEP_SUMMARY"
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { summary } = require('@actions/core')
+            await summary
+             .addHeading('Secret Output Summary')
+             .addRaw(`- Secret State: ${process.env.secret_state}\n`)
+             .addRaw(`- Secret State: ${process.env.secret_state}\n`)
+             .write();
+        env:
+          SECRET_NUMBER: ${{ steps.sets-a-secret.outputs.secret-number }}
