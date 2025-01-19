@@ -1,0 +1,106 @@
+# https://livebook.manning.com/book/github-actions-in-action/chapter-3/160
+name: Ch3 Event Triggers Matrix
+
+on:
+  push: # Trigger on any branch push
+    branches: # Filter to only trigger on pushes to the main branch
+      - main
+    # Filter to only trigger on pushes to a specific path
+    paths:
+      - ".github/**" # the * character is a special character in YAML, so you have to quote all strings that contain values with wildcards
+
+  pull_request: # Trigger on pull request events targeting any branch
+    types:
+      - opened # Trigger when a PR is created
+      - reopened # Trigger when a PR is reopened
+      - synchronize # Trigger when new commits are pushed to the PR
+      - edited # Trigger when a PR title or description is edited
+      # less common
+      - ready_for_review # Trigger when a draft PR is marked as ready for review
+      - closed # Trigger when a PR is closed
+      - review_requested # Trigger when a reviewer is requested for the PR
+      - assigned # Trigger when a PR is assigned to someone
+      - unassigned # Trigger when a PR is unassigned
+      - labeled # Trigger when a label is added to the PR
+      - unlabeled # Trigger when a label is removed from the PR
+      - converted_to_draft # Trigger when a PR is converted to a draft
+      - review_request_removed # Trigger when a reviewer request is removed
+    # for more https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows
+
+  schedule:
+    # Runs at every 15th minute
+    - cron: "*/15 * * * *"
+    # Runs every hour from 9am to 5pm
+    - cron: "0 9-17 * * *"
+    # Runs every Friday at midnight
+    - cron: "0 0 * * FRI"
+    # Runs every quarter (00:00 on day 1 every 3rd month)
+    - cron: "0 0 1 */3 *"
+    # for cron syntax https://crontab.guru/#0_1-23_*_*_6-7
+
+  repository_dispatch: # Custom trigger for external systems (e.g., Pact webhook in a provider repo triggered by a consumer)
+    types: [event1, event2]
+
+  workflow_dispatch: # Manual trigger with input parameters
+    inputs:
+      homedrive:
+        description: "The home drive on the machine"
+        required: true
+      logLevel: # Custom input: log level with default and choices
+        description: "Log level"
+        default: "warning"
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+      tag: # Custom input: boolean to decide if a tag should be applied after a test run
+        description: "Apply tag after successful test run"
+        required: true
+        type: boolean
+      # Github > Settings > Environments
+      # Used to differentiate environment-specific settings, such as environment variables, secrets, and protection rules
+      # for workflows targeting different stages of your deployment pipeline (e.g., dev, stage, prod).
+      # have to add an environment so that there is a choice here
+      environment: # Custom input: environment variable for test runs
+        description: "Environment to run tests against"
+        type: environment
+        required: true
+
+jobs:
+  ch3-event-triggers-matrix:
+    strategy:
+      fail-fast: false # continue all jobs even if one fails
+      max-parallel: 4 # optional
+      matrix:
+        os: [ubuntu-latest]
+        shardIndex: [1, 2]
+        node-version: [18, 20, 22]
+    # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
+
+    name: Run on ${{ matrix.os }} with Node ${{ matrix.node-version }} and index ${{ matrix.shardIndex }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Workflow Inputs
+        if: ${{ github.event_name == 'workflow_dispatch' }} # Run this step only if triggered manually
+        run: |
+          echo "Homedrive: ${{ inputs.homedrive }}"
+          echo "Log level: ${{ inputs.logLevel }}"
+          echo "Tag source: ${{ inputs.tag }}"
+          echo "Environment ${{ inputs.environment }}"
+
+      - name: Payload
+        if: ${{ github.event_name == 'repository_dispatch' }} # Run this step only if triggered by repository_dispatch
+        run: |
+          echo "Payload: ${{ toJSON(github.event.client_payload)}}"
+
+      - run: echo "👋 Hello World" # Basic step to print a message
+
+      - name: Checkout
+        uses: actions/checkout@v4 # Use GitHub's checkout action to pull repository code
+
+      - name: List the files in the repository
+        run: | # List all files in the repository using the tree command
+          echo "The repository ${{ github.repository }} contains the following files:"
+          tree
