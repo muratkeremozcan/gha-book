@@ -83,7 +83,8 @@ jobs:
 
     steps:
       - name: Workflow Inputs
-        if: ${{ github.event_name == 'workflow_dispatch' }} # Run this step only if triggered manually
+        # Run this step only if triggered manually
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         run: |
           echo "Homedrive: ${{ inputs.homedrive }}"
           echo "Log level: ${{ inputs.logLevel }}"
@@ -91,7 +92,8 @@ jobs:
           echo "Environment ${{ inputs.environment }}"
 
       - name: Payload
-        if: ${{ github.event_name == 'repository_dispatch' }} # Run this step only if triggered by repository_dispatch
+        # Run this step only if triggered by repository_dispatch
+        if: ${{ github.event_name == 'repository_dispatch' }}
         run: |
           echo "Payload: ${{ toJSON(github.event.client_payload)}}"
 
