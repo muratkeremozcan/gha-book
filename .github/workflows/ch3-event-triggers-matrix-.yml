@@ -94,6 +94,8 @@ jobs:
       - name: Payload
         # Run this step only if triggered by repository_dispatch
         if: ${{ github.event_name == 'repository_dispatch' }}
+        # The toJSON function is used when you want to convert a complex object or data structure
+        # into a JSON string for easier logging or passing as a string in workflows.
         run: |
           echo "Payload: ${{ toJSON(github.event.client_payload)}}"
 
