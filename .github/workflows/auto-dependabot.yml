@@ -10,7 +10,7 @@ on:
       - reopened
 
 jobs:
-  automerge:
+  auto-dependabot:
     runs-on: ubuntu-latest
     if: |
       github.actor == 'dependabot[bot]' &&
