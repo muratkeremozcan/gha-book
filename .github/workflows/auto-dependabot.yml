@@ -21,13 +21,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      - name: Read Node version from .nvmrc
+        id: node_version
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
+
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "22" # Specify your Node.js version
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
+
+      - name: Run Tests
+        run: npm test # Ensure you have a test script in package.json
 
       - name: Merge PR
         uses: pascalgn/automerge-action@v0.14.3
@@ -35,4 +42,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           merge-method: squash # Options: merge, squash, rebase
-
