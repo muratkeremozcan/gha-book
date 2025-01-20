@@ -1,15 +1,8 @@
-name: Run PR checks
-on:
-  pull_request:
-  workflow_dispatch:
-
-# if this branch is pushed back to back, cancel the older branch's workflow
-concurrency:
-  group: ${{ github.ref }} && ${{ github.workflow }}
-  cancel-in-progress: true
+name: PR Checks
+on: [pull_request]
 
 jobs:
-  pr-check:
+  pr-checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,3 +24,21 @@ jobs:
 
       - name: Run lint
         run: npm run lint
+
+      - name: Run Test
+        run: npm test
+
+      - name: Run Build
+        run: npm run build
+
+      - name: Test Hello World Action
+        id: hello
+        uses: ./actions/hello-world
+        with:
+          who-to-greet: 'TypeScript Action Tester'
+
+      - name: Test Goodbye World Action
+        id: goodbye
+        uses: ./actions/goodbye-world
+        with:
+          who-to-farewell: ${{ steps.hello.outputs.time }}

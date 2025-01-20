@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 
-async function run() {
+export async function run(): Promise<void> {
   try {
     const nameToGreet = core.getInput('who-to-greet')
     console.log(`Hello ${nameToGreet}!`)

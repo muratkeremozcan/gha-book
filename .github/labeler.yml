@@ -40,8 +40,19 @@ dependencies:
   - '**/requirements.txt'
 
 github-actions:
-  - '.github/**/*.yml'
-  - '.github/**/*.yaml'
+  - '.github/**/*'
+  - 'actions/**/*.yml'
+  - 'actions/**/*.yaml'
+  - '.github/workflows/**'
+
+source:
+  - 'src/**/*'
+  - 'actions/**/src/**/*'
+  - '**/*.ts'
+  - '**/*.js'
+  - '!**/*.test.*'
+  - '!**/*.spec.*'
+  - '!dist/**/*'
 
 documentation:
   - '**/*.md'
@@ -50,10 +61,11 @@ documentation:
   - 'CHANGELOG.md'
 
 tests:
-  - 'pw/**/*'
-  - 'cypress/**/*'
-  - '**/*.test.*'
-  - '**/*.spec.*'
+  - 'actions/**/*.test.*'
+  - 'actions/**/*.spec.*'
+  - 'src/**/*.test.*'
+  - 'src/**/*.spec.*'
+  - '**/__tests__/**/*'
 
 configuration:
   - '**/*.json'
@@ -61,3 +73,4 @@ configuration:
   - '**/*.yml'
   - '**/*.config.*'
   - '.env*'
+  - '!.github/**/*'  # Exclude GitHub Actions configs from generic config label
