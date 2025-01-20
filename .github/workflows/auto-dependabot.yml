@@ -37,7 +37,7 @@ jobs:
         run: npm test # Ensure you have a test script in package.json
 
       - name: Merge PR
-        uses: pascalgn/automerge-action@v0.14.3
+        uses: pascalgn/automerge-action@v0.16.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
