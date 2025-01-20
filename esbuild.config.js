@@ -1,23 +1,30 @@
 const esbuild = require('esbuild')
-const { readdirSync } = require('fs')
-const { join } = require('path')
+const fs = require('fs')
+const path = require('path')
 
-// Get all action directories
-const actionsDir = join(__dirname, 'actions')
-const actions = readdirSync(actionsDir, { withFileTypes: true })
-  .filter((dirent) => dirent.isDirectory())
-  .map((dirent) => dirent.name)
+// Only build TypeScript-based actions (skip Docker and composite actions)
+const tsActionDirs = ['hello-world', 'goodbye-world']
 
-// Build each action
+const entryPoints = tsActionDirs.map((dir) => {
+  const actionPath = path.join('actions', dir, 'src', `${dir}.ts`)
+  if (!fs.existsSync(actionPath)) {
+    throw new Error(`Action source file not found: ${actionPath}`)
+  }
+  return actionPath
+})
+
 Promise.all(
-  actions.map((action) =>
-    esbuild.build({
-      entryPoints: [`actions/${action}/src/${action}.ts`],
+  entryPoints.map((entry) => {
+    const outfile = entry.replace('/src/', '/dist/').replace('.ts', '.js')
+    return esbuild.build({
+      entryPoints: [entry],
       bundle: true,
+      outfile,
       platform: 'node',
-      target: 'node22',
-      outfile: `actions/${action}/dist/${action}.js`,
-      external: ['@actions/core']
+      target: 'node20',
+      format: 'cjs'
     })
-  )
-).catch(() => process.exit(1))
+  })
+)
+  .then(() => console.log('Build complete'))
+  .catch(() => process.exit(1))
