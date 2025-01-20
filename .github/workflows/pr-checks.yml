@@ -7,30 +7,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-      - name: Read Node version from .nvmrc
-        id: node_version
-        run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
-
-      - uses: actions/setup-node@v4
+      # Use our composite action for TypeScript setup and checks
+      - name: Setup and Test TypeScript
+        id: setup
+        uses: ./actions/setup-ts-project
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version-file: '.nvmrc'
+          install-command: 'npm ci'
+          build-command: 'npm run build'
+          skip-tests: 'false'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run typecheck
-        run: npm run typecheck
-
-      - name: Run lint
-        run: npm run lint
-
-      - name: Run Test
-        run: npm test
-
-      - name: Run Build
-        run: npm run build
-
+      # Test our actions
       - name: Test Hello World Action
         id: hello
         uses: ./actions/hello-world
@@ -42,3 +29,22 @@ jobs:
         uses: ./actions/goodbye-world
         with:
           who-to-farewell: ${{ steps.hello.outputs.time }}
+
+      - name: Test Answer Action
+        id: answer
+        uses: ./actions/answer-action
+        with:
+          who-to-greet: 'Docker Action Tester'
+
+      - name: Verify Answer
+        if: ${{ steps.answer.outputs.answer != '42' }}
+        run: |
+          echo "::error file=actions/answer-action/entrypoint.sh,line=4,title=Error in container::The answer was not 42"
+          exit 1
+
+      - name: Show All Action Outputs
+        run: |
+          echo "Node.js Version: ${{ steps.setup.outputs.node-version }}"
+          echo "Hello World Time: ${{ steps.hello.outputs.time }}"
+          echo "Goodbye World Message: ${{ steps.goodbye.outputs.message }}"
+          echo "Answer Action Result: ${{ steps.answer.outputs.answer }}"

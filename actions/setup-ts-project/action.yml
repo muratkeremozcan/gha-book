@@ -1,0 +1,60 @@
+name: 'Setup TypeScript Project'
+description: 'Sets up Node.js, installs dependencies, and runs TypeScript checks'
+
+inputs:
+  node-version-file:
+    description: 'Path to the .nvmrc file'
+    required: false
+    default: '.nvmrc'
+  install-command:
+    description: 'Command to install dependencies'
+    required: false
+    default: 'npm ci'
+  build-command:
+    description: 'Command to build the project'
+    required: false
+    default: 'npm run build'
+  skip-tests:
+    description: 'Whether to skip running tests'
+    required: false
+    default: 'false'
+
+outputs:
+  node-version:
+    description: 'The Node.js version that was installed'
+    value: ${{ steps.read-nvmrc.outputs.node-version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Read .nvmrc
+      id: read-nvmrc
+      shell: bash
+      run: echo "node-version=$(cat ${{ inputs.node-version-file }})" >> $GITHUB_OUTPUT
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ steps.read-nvmrc.outputs.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      shell: bash
+      run: ${{ inputs.install-command }}
+    
+    - name: Run typecheck
+      shell: bash
+      run: npm run typecheck
+    
+    - name: Run lint
+      shell: bash
+      run: npm run lint
+    
+    - name: Run tests
+      if: inputs.skip-tests != 'true'
+      shell: bash
+      run: npm test
+    
+    - name: Build
+      shell: bash
+      run: ${{ inputs.build-command }}
