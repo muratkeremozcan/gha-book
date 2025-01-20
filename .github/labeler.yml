@@ -1,33 +1,32 @@
 # This is the configuration file that defines the rules
 
 # Add 'repo' label to any root file changes
-repo:
-  - any: ['*']
+repo: '*'
 
 # Conventional Commit Style Labels
-feat:
-  - title: '^feat:.*'
+feat: 
+  title: '^feat:.*'
 
-fix:
-  - title: '^fix:.*'
+fix: 
+  title: '^fix:.*'
 
-chore:
-  - title: '^chore:.*'
+chore: 
+  title: '^chore:.*'
 
-docs:
-  - title: '^docs:.*'
+docs: 
+  title: '^docs:.*'
 
-style:
-  - title: '^style:.*'
+style: 
+  title: '^style:.*'
 
-refactor:
-  - title: '^refactor:.*'
+refactor: 
+  title: '^refactor:.*'
 
-perf:
-  - title: '^perf:.*'
+perf: 
+  title: '^perf:.*'
 
-test:
-  - title: '^test:.*'
+test: 
+  title: '^test:.*'
 
 # Path-based Labels
 dependencies:
