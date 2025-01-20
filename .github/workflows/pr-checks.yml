@@ -1,8 +1,8 @@
-name: 'Test Actions'
+name: PR Checks
 on: [pull_request]
 
 jobs:
-  build-test:
+  pr-checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
