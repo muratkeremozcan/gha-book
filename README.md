@@ -1,12 +1,57 @@
 # GitHub Actions Book Examples
 
-This repository contains example GitHub Actions from the GitHub Actions book, including a TypeScript-based action implementation.
+This repository contains example GitHub Actions from the GitHub Actions book, including TypeScript, Docker, and composite action implementations.
 
-## TypeScript Action Development
+- [GitHub Actions Book Examples](#github-actions-book-examples)
+  - [TL;DR - When to Use What](#tldr---when-to-use-what)
+    - [Action Types Quick Guide](#action-types-quick-guide)
+    - [Choose Your Action Type](#choose-your-action-type)
+  - [Action Types](#action-types)
+    - [1. TypeScript Actions](#1-typescript-actions)
+      - [Project Structure](#project-structure)
+      - [Implementation Steps](#implementation-steps)
+      - [Development Workflow](#development-workflow)
+    - [2. Docker Actions](#2-docker-actions)
+      - [Structure and Implementation](#structure-and-implementation)
+    - [3. Composite Actions](#3-composite-actions)
+      - [Composite vs Reusable Workflows](#composite-vs-reusable-workflows)
+  - [Usage Examples](#usage-examples)
+    - [Using Individual Actions](#using-individual-actions)
+    - [Chaining Multiple Actions](#chaining-multiple-actions)
+  - [Repository Structure](#repository-structure)
+    - [Multiple Actions Support](#multiple-actions-support)
 
-Here's how we built a TypeScript-based GitHub Action:
+## TL;DR - When to Use What
 
-### 1. Project Structure
+### Action Types Quick Guide
+
+- **Composite Actions**: Step-level reuse (like a function)
+- **Reusable Workflows**: Job-level reuse (like a template)
+
+### Choose Your Action Type
+
+1. **TypeScript Actions** ✅ (Preferred)
+
+   - Complex logic, API calls, data processing
+   - Need type safety and testing
+   - Want IDE support and maintainability
+
+2. **Docker Actions** (Use when necessary)
+
+   - Need specific system dependencies
+   - Require custom runtime environment
+   - Have non-Node.js dependencies
+
+3. **Composite Actions** (Use for simplicity)
+   - Just combining existing actions/commands
+   - No complex logic needed
+   - Want to avoid building/compiling
+
+## Action Types
+
+### 1. TypeScript Actions
+
+#### Project Structure
 
 ```
 actions/
@@ -26,7 +71,7 @@ actions/
     action.yml             # Action metadata
 ```
 
-### 2. Action Implementation Steps
+#### Implementation Steps
 
 1. **Setup Dependencies**
 
@@ -55,7 +100,7 @@ actions/
      time:
        description: 'The time we greeted you'
    runs:
-     using: 'node16'
+     using: 'node20'
      main: 'dist/hello-world.js'
    ```
 
@@ -66,15 +111,11 @@ actions/
 
    export async function run(): Promise<void> {
      try {
-       const nameToGreet = core.getInput('who-to-greet')
-       console.log(`Hello ${nameToGreet}!`)
-       core.setOutput('time', new Date().toTimeString())
+       const who = core.getInput('who-to-greet')
+       const time = new Date().toTimeString()
+       core.setOutput('time', time)
      } catch (error) {
-       if (error instanceof Error) {
-         core.setFailed(error.message)
-       } else {
-         core.setFailed('An unexpected error occurred')
-       }
+       core.setFailed(`Action failed: ${error}`)
      }
    }
 
@@ -103,7 +144,7 @@ actions/
    })
    ```
 
-### 3. Development Workflow
+#### Development Workflow
 
 1. **Build**
 
@@ -122,7 +163,106 @@ actions/
    npm run validate  # Runs typecheck, lint, and tests
    ```
 
-### 4. Usage in Workflows
+### 2. Docker Actions
+
+#### Structure and Implementation
+
+1. **Structure**
+
+   ```
+   actions/
+     answer-action/           # Docker-based action
+       Dockerfile            # Defines the container
+       entrypoint.sh        # Script that runs in container
+       action.yml           # Action metadata
+   ```
+
+2. **Action Metadata** (`action.yml`)
+
+   ```yaml
+   name: 'Answer Action'
+   description: 'Returns the answer to everything'
+   inputs:
+     who-to-greet:
+       description: 'Who to greet'
+       required: true
+   outputs:
+     answer:
+       description: 'The answer (always 42)'
+   runs:
+     using: 'docker' # Use Docker instead of Node
+     image: 'Dockerfile' # Reference local Dockerfile
+     args: # Pass inputs as arguments
+       - ${{ inputs.who-to-greet }}
+   ```
+
+3. **Implementation**
+   - `Dockerfile`: Defines the container environment
+   - `entrypoint.sh`: Shell script that runs in the container
+   - Uses `$GITHUB_OUTPUT` for outputs instead of `@actions/core`
+
+### 3. Composite Actions
+
+#### Composite vs Reusable Workflows
+
+Key distinction between composite actions and reusable workflows:
+
+1. **Composite Actions (Step-Level)**
+
+   ```yaml
+   # actions/setup-ts-project/action.yml
+   name: 'Setup TypeScript'
+   runs:
+     using: 'composite'
+     steps:
+       - uses: actions/setup-node@v4
+       - shell: bash
+         run: npm ci
+   ```
+
+   - Live in `actions/` directory
+   - Run as steps within a job
+   - Share the job's runner and context
+   - Must specify `shell:` for run steps
+   - Used like: `- uses: ./actions/setup-ts-project`
+
+2. **Reusable Workflows (Job-Level)**
+
+   ```yaml
+   # .github/workflows/setup.yml
+   name: 'Setup'
+   on:
+     workflow_call: # Makes workflow reusable
+
+   jobs:
+     setup:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/setup-node@v4
+         - run: npm ci
+   ```
+
+   - Live in `.github/workflows/`
+   - Run as complete jobs
+   - Have their own runners
+   - Used like: `uses: owner/repo/.github/workflows/setup.yml@main`
+
+**When to Use What:**
+
+- Use **Composite Actions** when you need:
+
+  - Reusable steps within a job
+  - To share the job's context
+  - Quick, single-purpose tasks
+
+- Use **Reusable Workflows** when you need:
+  - Separate jobs with their own runners
+  - Job-level features (needs, if, strategy)
+  - Complex workflow patterns
+
+## Usage Examples
+
+### Using Individual Actions
 
 You can use each action independently:
 
@@ -137,6 +277,8 @@ You can use each action independently:
   with:
     who-to-farewell: 'GitHub Actions User'
 ```
+
+### Chaining Multiple Actions
 
 Or chain them together using outputs:
 
@@ -159,7 +301,9 @@ Or chain them together using outputs:
     echo "Date of farewell: ${{ steps.goodbye.outputs.date }}"
 ```
 
-## Multiple Actions
+## Repository Structure
+
+### Multiple Actions Support
 
 This repository supports multiple actions in the same codebase:
 
