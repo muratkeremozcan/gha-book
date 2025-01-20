@@ -1,0 +1,15 @@
+name: Yml Lint
+
+on:
+  pull_request:
+    paths:
+      - "**.yml"
+
+jobs:
+  yml-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: devops-actions/actionlint@v0.1.3
