@@ -1,3 +1,5 @@
+# This is the workflow file that actually runs the dependabot action
+
 name: Auto-merge Dependabot PRs
 
 on:
@@ -33,3 +35,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           merge-method: squash # Options: merge, squash, rebase
+

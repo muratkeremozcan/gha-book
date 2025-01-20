@@ -1,3 +1,5 @@
+# # This is the configuration file that defines the rules
+
 version: 2
 updates:
   # GitHub Actions Updates
