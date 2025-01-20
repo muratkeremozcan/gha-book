@@ -1,5 +1,3 @@
-# # This is the configuration file that defines the rules
-
 version: 2
 updates:
   # GitHub Actions Updates
@@ -13,6 +11,8 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
+    auto-merge: true
+    versioning-strategy: increase
   
   # Docker Updates
   - package-ecosystem: "docker"
@@ -27,6 +27,8 @@ updates:
     labels:
       - "dependencies"
       - "docker"
+    auto-merge: true
+    versioning-strategy: increase
   
   # npm Updates
   - package-ecosystem: "npm"
@@ -40,9 +42,15 @@ updates:
     labels:
       - "dependencies"
       - "npm"
-    # Optional configurations:
-    versioning-strategy: "auto"  # Options: "auto", "widen", "increase", "lockfile-only"
+    # Only auto-merge minor and patch updates
+    auto-merge: true
+    versioning-strategy: increase
     ignore:
       - dependency-name: "express"
         versions:
           - "4.17.1"
+      - dependency-type: "development"
+        update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "chore"
+      include: "scope"
