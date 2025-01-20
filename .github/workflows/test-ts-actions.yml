@@ -1,5 +1,5 @@
 name: 'Test Actions'
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build-test:
@@ -25,11 +25,11 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Build
-        run: npm run build
-
-      - name: Test
+      - name: Run Test
         run: npm test
+
+      - name: Run Build
+        run: npm run build
 
       - name: Test Hello World Action
         id: hello
