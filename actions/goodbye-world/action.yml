@@ -1,0 +1,15 @@
+name: 'Goodbye World Action'
+description: 'A farewell action that outputs the date'
+inputs:
+  who-to-farewell:
+    description: 'Who to say goodbye to'
+    required: true
+    default: 'World'
+outputs:
+  date:
+    description: 'The date when we said goodbye'
+  message:
+    description: 'The farewell message'
+runs:
+  using: 'node20'
+  main: 'dist/goodbye-world.js'

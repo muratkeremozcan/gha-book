@@ -1,0 +1,45 @@
+name: 'Test Actions'
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+
+      - name: Read Node version from .nvmrc
+        id: node_version
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
+  test-ts-actions:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test Hello World Action
+        id: hello
+        uses: ./actions/hello-world
+        with:
+          who-to-greet: 'TypeScript Action Tester'
+
+      - name: Test Goodbye World Action
+        id: goodbye
+        uses: ./actions/goodbye-world
+        with:
+          who-to-farewell: ${{ steps.hello.outputs.time }}
