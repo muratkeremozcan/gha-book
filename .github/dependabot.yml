@@ -11,8 +11,6 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
-    auto-merge: true
-    versioning-strategy: increase
   
   # Docker Updates
   - package-ecosystem: "docker"
@@ -23,12 +21,10 @@ updates:
     ignore:
       - dependency-name: "node"
         versions:
-          - "22.x"
+          - "20.x"
     labels:
       - "dependencies"
       - "docker"
-    auto-merge: true
-    versioning-strategy: increase
   
   # npm Updates
   - package-ecosystem: "npm"
@@ -36,20 +32,14 @@ updates:
     schedule:
       interval: "daily"
     open-pull-requests-limit: 10
-    allow:
-      - dependency-type: "direct"
-      - dependency-type: "indirect"
     labels:
       - "dependencies"
       - "npm"
-    # Only auto-merge minor and patch updates
-    auto-merge: true
-    versioning-strategy: increase
     ignore:
       - dependency-name: "express"
         versions:
-          - "4.17.1"
-      - dependency-type: "development"
+          - ">=5.0.0"
+      - dependency-name: "*"
         update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "chore"
