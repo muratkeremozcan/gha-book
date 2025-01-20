@@ -8,7 +8,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
-
       - name: Read Node version from .nvmrc
         id: node_version
         run: echo "NODE_VERSION=$(cat .nvmrc)" >> "$GITHUB_ENV"
@@ -17,20 +16,20 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
+
+      - name: Run typecheck
+        run: npm run typecheck
+
+      - name: Run lint
+        run: npm run lint
 
       - name: Build
         run: npm run build
 
       - name: Test
         run: npm test
-
-  test-ts-actions:
-    needs: build-test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
       - name: Test Hello World Action
         id: hello
