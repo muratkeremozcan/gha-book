@@ -1,0 +1,46 @@
+version: 2
+updates:
+  # GitHub Actions Updates
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "direct"
+    labels:
+      - "dependencies"
+      - "github-actions"
+  
+  # Docker Updates
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "node"
+        versions:
+          - "22.x"
+    labels:
+      - "dependencies"
+      - "docker"
+  
+  # npm Updates
+  - package-ecosystem: "npm"
+    directory: "/"  # Location of your package.json
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    labels:
+      - "dependencies"
+      - "npm"
+    # Optional configurations:
+    versioning-strategy: "auto"  # Options: "auto", "widen", "increase", "lockfile-only"
+    ignore:
+      - dependency-name: "express"
+        versions:
+          - "4.17.1"

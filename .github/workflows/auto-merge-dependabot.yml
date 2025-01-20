@@ -1,0 +1,35 @@
+name: Auto-merge Dependabot PRs
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  automerge:
+    runs-on: ubuntu-latest
+    if: |
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.mergeable_state == 'clean'
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22" # Specify your Node.js version
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Merge PR
+        uses: pascalgn/automerge-action@v0.14.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          merge-method: squash # Options: merge, squash, rebase
