@@ -2,7 +2,7 @@
 
 # Add 'repo' label to any root file changes
 repo:
-  - '*'
+  - any: ['*']
 
 # Conventional Commit Style Labels
 feat:
