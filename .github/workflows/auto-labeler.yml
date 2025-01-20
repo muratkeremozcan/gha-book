@@ -1,6 +1,6 @@
 # This is the workflow file that actually runs the labeler action
 
-name: Labeler
+name: Auto Labeler
 on: pull_request_target
 
 permissions:
@@ -8,10 +8,10 @@ permissions:
   pull-requests: write
 
 jobs:
-  triage:
+  auto-labeler:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/labeler@v5
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          sync-labels: true  # Remove labels when they no longer match
+          sync-labels: true # Remove labels when they no longer match
