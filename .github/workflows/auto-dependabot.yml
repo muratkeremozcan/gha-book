@@ -4,6 +4,17 @@ name: Auto-merge Dependabot PRs
 
 on:
   pull_request:
+    paths:
+      - '**/package.json'
+      - '**/package-lock.json'
+      - '**/yarn.lock'
+      - '**/pnpm-lock.yaml'
+      - '**/requirements.txt'
+      - '**/Pipfile.lock'
+      - '**/poetry.lock'
+      - '**/Gemfile.lock'
+      - '**/go.sum'
+      - '**/go.mod'
     types:
       - opened
       - synchronize
