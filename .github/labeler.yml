@@ -9,21 +9,44 @@ repo:
 # 2) Conventional Commit Style labels (based on PR title)
 #    If your PR title starts with "feat:", "fix:", "docs:", etc., these labels will apply.
 feat:
-  - title: '^feat:.*'
+  - any: ['**/*']
+    all: []
+    title: '^feat:.*'
+
 fix:
-  - title: '^fix:.*'
+  - any: ['**/*']
+    all: []
+    title: '^fix:.*'
+
 chore:
-  - title: '^chore:.*'
+  - any: ['**/*']
+    all: []
+    title: '^chore:.*'
+
 docs:
-  - title: '^docs:.*'
+  - any: ['**/*']
+    all: []
+    title: '^docs:.*'
+
 style:
-  - title: '^style:.*'
+  - any: ['**/*']
+    all: []
+    title: '^style:.*'
+
 refactor:
-  - title: '^refactor:.*'
+  - any: ['**/*']
+    all: []
+    title: '^refactor:.*'
+
 perf:
-  - title: '^perf:.*'
+  - any: ['**/*']
+    all: []
+    title: '^perf:.*'
+
 test:
-  - title: '^test:.*'
+  - any: ['**/*']
+    all: []
+    title: '^test:.*'
 
 # 3) Dependency files (Node, Python, Maven, Gradle, etc.)
 dependencies:
