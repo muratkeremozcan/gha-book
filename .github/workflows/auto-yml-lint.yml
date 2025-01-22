@@ -3,7 +3,7 @@ name: Yml Lint
 on:
   pull_request:
     paths:
-      - "**.yml"
+      - '**.yml'
 
 jobs:
   yml-lint:
@@ -12,4 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # not only lints all the yml,
+      # but can also detect and prevent injection vulnerabilities in workflows
       - uses: devops-actions/actionlint@v0.1.3
