@@ -1,76 +1,103 @@
+# .github/labeler.yml
+# Applies labels to PRs based on file paths and/or PR title patterns.
 
-# This is the configuration file that defines the rules
-
-# Add 'repo' label to any root file changes
+# 1) Root-level changes
+#    Apply the "repo" label to any file changed in the repo's root directory.
 repo:
-  - '*'
+  - '/*'
 
-# Conventional Commit Style Labels
+# 2) Conventional Commit Style labels (based on PR title)
+#    If your PR title starts with "feat:", "fix:", "docs:", etc., these labels will apply.
 feat:
   - title: '^feat:.*'
-
 fix:
   - title: '^fix:.*'
-
 chore:
   - title: '^chore:.*'
-
 docs:
   - title: '^docs:.*'
-
 style:
   - title: '^style:.*'
-
 refactor:
   - title: '^refactor:.*'
-
 perf:
   - title: '^perf:.*'
-
 test:
   - title: '^test:.*'
 
-# Path-based Labels
+# 3) Dependency files (Node, Python, Maven, Gradle, etc.)
 dependencies:
   - 'package.json'
   - 'package-lock.json'
   - '**/package.json'
-  - 'pom.xml'
-  - 'build.gradle'
+  - '**/package-lock.json'
+  - 'yarn.lock'
+  - '**/yarn.lock'
+  - 'requirements.txt'
   - '**/requirements.txt'
+  - 'Pipfile'
+  - 'Pipfile.lock'
+  - 'Gemfile'
+  - 'Gemfile.lock'
+  - 'pom.xml'
+  - '**/pom.xml'
+  - 'build.gradle'
+  - '**/build.gradle'
+  - 'go.mod'
+  - '**/go.mod'
+  - 'go.sum'
+  - '**/go.sum'
+  - '**/Cargo.toml'
+  - '**/Cargo.lock'
+  - '**/composer.json'
+  - '**/composer.lock'
 
+# 4) GitHub Actions / CI
+#    Any .yml or .yaml file in .github or actions folders.
 github-actions:
-  - '.github/**/*'
+  - '.github/**/*.yml'
+  - '.github/**/*.yaml'
   - 'actions/**/*.yml'
   - 'actions/**/*.yaml'
-  - '.github/workflows/**'
 
+# 5) Source code
+#    Commonly includes .js, .ts, .py, .go, etc. Excludes test files + dist
 source:
   - 'src/**/*'
   - 'actions/**/src/**/*'
   - '**/*.ts'
   - '**/*.js'
+  - '**/*.py'
+  - '**/*.go'
   - '!**/*.test.*'
   - '!**/*.spec.*'
   - '!dist/**/*'
 
+# 6) Documentation
 documentation:
   - '**/*.md'
   - 'docs/**/*'
-  - 'README.md'
   - 'CHANGELOG.md'
+  - 'CONTRIBUTING.md'
+  - 'LICENSE*'
+  - 'README.md'
 
+# 7) Tests
+#    Matches most common test file name patterns.
 tests:
-  - 'actions/**/*.test.*'
-  - 'actions/**/*.spec.*'
-  - 'src/**/*.test.*'
-  - 'src/**/*.spec.*'
+  - '**/*test*'
+  - '**/*spec*'
   - '**/__tests__/**/*'
+  - '**/tests/**/*'
 
+# 8) Configuration
+#    Broad match for JSON, YAML, TOML, .env, .ini, etc.
+#    Includes .github/labeler.yml as well unless you explicitly exclude it.
 configuration:
   - '**/*.json'
   - '**/*.yaml'
   - '**/*.yml'
+  - '**/*.toml'
+  - '**/*.ini'
   - '**/*.config.*'
   - '.env*'
-  - '!.github/**/*'  # Exclude GitHub Actions configs from generic config label
