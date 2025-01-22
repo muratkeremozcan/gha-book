@@ -1,9 +1,7 @@
 # This is the workflow file that actually runs the labeler action
 
 name: 'Pull Request Labeler'
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+on: pull_request_target
 
 jobs:
   triage:
