@@ -11,6 +11,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref || github.ref_name }}
 
       # not only lints all the yml,
       # but can also detect and prevent injection vulnerabilities in workflows
