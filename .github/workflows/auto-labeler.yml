@@ -22,3 +22,4 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           sync-labels: true
           configuration-path: .github/labeler.yml
+          dot: true # matches .github folder, etc.
