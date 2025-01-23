@@ -73,7 +73,7 @@ on:
     # For more details on release event types, see:
     # https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#release
 
-jobs:
+jobs: # jobs share a runner, and execute in parallel by default. Use needs to create a sequence of jobs.
   ch3-event-triggers-matrix:
     strategy:
       fail-fast: false # continue all jobs even if one fails
@@ -87,7 +87,7 @@ jobs:
     name: Run on ${{ matrix.os }} with Node ${{ matrix.node-version }} and index ${{ matrix.shardIndex }}
     runs-on: ${{ matrix.os }}
 
-    steps:
+    steps: # steps are sequential tasks within jobs
       - name: Workflow Inputs
         # Run this step only if triggered manually
         if: ${{ github.event_name == 'workflow_dispatch' }}
