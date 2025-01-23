@@ -25,7 +25,7 @@ outputs:
     value: ${{ steps.read-nvmrc.outputs.node-version }}
 
 runs:
-  using: "composite"
+  using: composite
   steps:
     - name: Read .nvmrc
       id: read-nvmrc

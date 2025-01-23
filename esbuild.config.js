@@ -1,4 +1,5 @@
-const esbuild = require('esbuild')
+/* eslint-disable @typescript-eslint/no-require-imports */
+const { build } = require('esbuild')
 const fs = require('fs')
 const path = require('path')
 
@@ -16,7 +17,7 @@ const entryPoints = tsActionDirs.map((dir) => {
 Promise.all(
   entryPoints.map((entry) => {
     const outfile = entry.replace('/src/', '/dist/').replace('.ts', '.js')
-    return esbuild.build({
+    return build({
       entryPoints: [entry],
       bundle: true,
       outfile,

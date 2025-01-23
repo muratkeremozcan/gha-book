@@ -7,11 +7,11 @@ const mockInput = 'Test User'
 describe('Hello World Action', () => {
   it('sets the time output', async () => {
     jest.spyOn(core, 'getInput').mockImplementation(() => mockInput)
-    const setOutputMock = jest.spyOn(core, 'setOutput')
+    const setOutputSpy = jest.spyOn(core, 'setOutput')
 
     await run()
 
-    expect(setOutputMock).toHaveBeenCalledWith('time', expect.any(String))
+    expect(setOutputSpy).toHaveBeenCalledWith('time', expect.any(String))
     expect(core.getInput).toHaveBeenCalledWith('who-to-greet')
   })
 
@@ -19,10 +19,10 @@ describe('Hello World Action', () => {
     jest.spyOn(core, 'getInput').mockImplementation(() => {
       throw new Error('Test error')
     })
-    const setFailedMock = jest.spyOn(core, 'setFailed')
+    const setFailedSpy = jest.spyOn(core, 'setFailed')
 
     await run()
 
-    expect(setFailedMock).toHaveBeenCalledWith('Test error')
+    expect(setFailedSpy).toHaveBeenCalledWith('Test error')
   })
 })

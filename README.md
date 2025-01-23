@@ -25,10 +25,18 @@ This repository contains example GitHub Actions from the GitHub Actions book, in
 
 ### Action Types Quick Guide
 
-- **Composite Actions**: Step-level reuse (like a function)
-- **Reusable Workflows**: Job-level reuse (like a template)
+- **Composite/TS/Docker Actions:**:
+
+  - Step-level reuse (like a function, used within a repo).
+  - Ideal for combining steps or encapsulating logic.
+
+- **Reusable Workflows**:
+  - Job-level reuse (like a template, used across repos).
+  - Ideal for orchestrating entire jobs across repositories.
 
 ### Choose Your Action Type
+
+These are all used within a repo, cannot be reached across repos. For that we use reusable workflows as the outer layer, and within reusable workflows we can use either of the 3 types of actions.
 
 1. **TypeScript Actions** ✅ (Preferred)
 
@@ -224,7 +232,7 @@ Key distinction between composite actions and reusable workflows:
    - Run as steps within a job
    - Share the job's runner and context
    - Must specify `shell:` for run steps
-   - Used like: `- uses: ./actions/setup-ts-project`
+   - Used like: `- uses: ./actions/setup-ts-project`, within the same repo
 
 2. **Reusable Workflows (Job-Level)**
 
@@ -245,7 +253,7 @@ Key distinction between composite actions and reusable workflows:
    - Live in `.github/workflows/`
    - Run as complete jobs
    - Have their own runners
-   - Used like: `uses: owner/repo/.github/workflows/setup.yml@main`
+   - Used like: `uses: owner/repo/.github/workflows/setup.yml@main`, can be used cross repo
 
 **When to Use What:**
 
@@ -254,11 +262,13 @@ Key distinction between composite actions and reusable workflows:
   - Reusable steps within a job
   - To share the job's context
   - Quick, single-purpose tasks
+  - Within the same repo
 
 - Use **Reusable Workflows** when you need:
   - Separate jobs with their own runners
   - Job-level features (needs, if, strategy)
   - Complex workflow patterns
+  - Need to reach across repos
 
 ## Usage Examples
 
