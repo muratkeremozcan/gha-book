@@ -1,7 +1,11 @@
 # This is the workflow file that actually runs the labeler action
 
 name: 'Pull Request Labeler'
-on: pull_request_target
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  pull_request_target:
+    types: [opened, synchronize, reopened]
 
 jobs:
   triage:
@@ -10,14 +14,21 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout PR
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref || github.ref_name }}
 
-      - uses: actions/labeler@v4
+      - name: Debug PR Info
+        run: |
+          echo "PR Title: ${{ github.event.pull_request.title }}"
+          echo "Files Changed: ${{ toJSON(github.event.pull_request.changed_files) }}"
+
+      - name: Label PR
+        uses: actions/labeler@v4
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           sync-labels: true
           configuration-path: .github/labeler.yml
-          dot: true # matches .github folder, etc.
+          dot: true

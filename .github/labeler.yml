@@ -5,49 +5,28 @@
 #    Apply the "repo" label to any file changed in the repo's root directory.
 repo:
   - '/*'
+  - '!/.github/**'
+  - '!/README.md'
 
 # 2) Conventional Commit Style labels (based on PR title)
 #    If your PR title starts with "feat:", "fix:", "docs:", etc., these labels will apply.
 feat:
-  - any: ['**/*']
-    all: []
-    title: '^feat:.*'
-
+  - title: '^feat:.*'
 fix:
-  - any: ['**/*']
-    all: []
-    title: '^fix:.*'
-
+  - title: '^fix:.*'
 chore:
-  - any: ['**/*']
-    all: []
-    title: '^chore:.*'
-
+  - title: '^chore:.*'
 docs:
-  - any: ['**/*']
-    all: []
-    title: '^docs:.*'
-
+  - title: '^docs:.*'
 style:
-  - any: ['**/*']
-    all: []
-    title: '^style:.*'
-
+  - title: '^style:.*'
 refactor:
-  - any: ['**/*']
-    all: []
-    title: '^refactor:.*'
-
+  - title: '^refactor:.*'
 perf:
-  - any: ['**/*']
-    all: []
-    title: '^perf:.*'
-
+  - title: '^perf:.*'
 test:
-  - any: ['**/*']
-    all: []
-    title: '^test:.*'
-
+  - title: '^test:.*'
+ 
 # 3) Dependency files (Node, Python, Maven, Gradle, etc.)
 dependencies:
   - 'package.json'
@@ -96,24 +75,19 @@ source:
   - '!**/*.spec.*'
   - '!dist/**/*'
 
-# 6) Documentation
-documentation:
-  - '**/*.md'
-  - 'docs/**/*'
-  - 'CHANGELOG.md'
-  - 'CONTRIBUTING.md'
-  - 'LICENSE*'
-  - 'README.md'
-
-# 7) Tests
+# 6) Tests
 #    Matches most common test file name patterns.
-tests:
+unit-tests:
   - '**/*test*'
-  - '**/*spec*'
   - '**/__tests__/**/*'
-  - '**/tests/**/*'
 
-# 8) Configuration
+e2e-tests:
+  - '**/*spec*'
+  - '**/tests/**/*'
+  - 'pw/**'
+  - 'cy/**'
+
+# 7) Configuration
 #    Broad match for JSON, YAML, TOML, .env, .ini, etc.
 #    Includes .github/labeler.yml as well unless you explicitly exclude it.
 configuration:
