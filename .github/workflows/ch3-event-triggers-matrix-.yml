@@ -73,7 +73,11 @@ on:
     # For more details on release event types, see:
     # https://docs.github.com/en/developers/webhooks-and-events/events/github-event-types#release
 
-jobs: # jobs share a runner, and execute in parallel by default. Use needs to create a sequence of jobs.
+# While jobs within the same workflow can share the same runner type (e.g., ubuntu-latest),
+# each job runs on a fresh, isolated runner instance.
+# This means that changes made in one job (e.g., npm install) do not persist to the next job.
+# Jobs execute in parallel by default. Use needs to create a sequence of jobs.
+jobs:
   ch3-event-triggers-matrix:
     strategy:
       fail-fast: false # continue all jobs even if one fails
