@@ -1,5 +1,3 @@
-# This is the workflow file that actually runs the labeler action
-
 name: 'Pull Request Labeler'
 on:
   pull_request:
@@ -21,9 +19,12 @@ jobs:
           ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Debug PR Info
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          FILES_CHANGED: ${{ toJSON(github.event.pull_request.changed_files) }}
         run: |
-          echo "PR Title: ${{ github.event.pull_request.title }}"
-          echo "Files Changed: ${{ toJSON(github.event.pull_request.changed_files) }}"
+          echo "PR Title: $PR_TITLE"
+          echo "Files Changed: $FILES_CHANGED"
 
       - name: Label PR
         uses: actions/labeler@v4
